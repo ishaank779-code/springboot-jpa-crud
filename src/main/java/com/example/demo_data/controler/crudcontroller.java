@@ -3,6 +3,7 @@ package com.example.demo_data.controler;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo_data.dto.logincheckdto;
+import com.example.demo_data.jwt.Jeneratetoken;
 import com.example.demo_data.model.Authdata;
 import com.example.demo_data.services.ddataservices;
 
@@ -12,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -29,6 +33,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 @CrossOrigin("http://localhost:3000/")
 public class crudcontroller {
 
+    @Autowired
+    private Jeneratetoken jtoken; 
     ddataservices dservices; 
     crudcontroller(ddataservices dservices){
            this.dservices = dservices; 
@@ -91,6 +97,28 @@ public class crudcontroller {
     public String getuserdata() {
         return "data return sucessfully ";
     }
+    
+    // gererate token 
+    @PostMapping("/token")
+    public String tokengenerate(@RequestBody String email) {
+         String webtoken = jtoken.gernateToken(email);
+        
+        return jtoken.extract(webtoken);
+
+    }
+   @PostMapping("/tokengenerate")
+   public String tokengenerates(@RequestBody String email) {
+    
+       
+       return jtoken.gernateToken(email);
+   }
+
+   @GetMapping("/admin")
+   public String getdata() {
+       return "admin dashboard";
+   }
+   
+   
     
     
     
