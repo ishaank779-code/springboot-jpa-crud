@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -27,15 +29,20 @@ public class JavaAuthfilter  extends OncePerRequestFilter {
         String Autheheader = request.getHeader("Authorization");
         String token = null ; 
         String email = null; 
+        String Roles = null; 
         // check bearer token hai ya nahi ; 
         if(Autheheader != null && Autheheader.startsWith("Bearer")){
             // bearer hatao ; 
             token = Autheheader.substring(7);
             email = jToken.extract(token);
+            Roles = jToken.extractRoles(token);
             
         }
         if(email!= null &&  SecurityContextHolder.getContext().getAuthentication()== null){
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, null , Collections.emptyList());
+               GrantedAuthority authority = 
+               new SimpleGrantedAuthority("ROLE" + Roles);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email,
+                 null , Collections.singleton(authority));
             authenticationToken.setDetails( new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext()
             .setAuthentication(authenticationToken);

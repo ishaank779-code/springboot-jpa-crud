@@ -6,6 +6,8 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.example.demo_data.model.Enum.Roles;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -25,8 +27,9 @@ public Key  getSingKey(){
   
 //  HEADER . PAYLAOY
 
-public String gernateToken(String email){
+public String gernateToken(String email , Roles roles){
     return Jwts.builder().setSubject(email)
+    .claim("roles", roles)
     .setIssuedAt(new Date())  //2:26  --> 2:36
     .setExpiration(new Date(System.currentTimeMillis()+1000*60*10)) 
     .signWith(getSingKey(),SignatureAlgorithm.HS256).compact() ;
@@ -35,5 +38,9 @@ public String gernateToken(String email){
 public String extract(String token){
     return
     Jwts.parserBuilder().setSigningKey(getSingKey()).build().parseClaimsJws(token).getBody().getSubject();
+}
+public String extractRoles(String token){  // generate token ; 
+    return
+    Jwts.parserBuilder().setSigningKey(getSingKey()).build().parseClaimsJws(token).getBody().get("roles", String.class);
 }
 }

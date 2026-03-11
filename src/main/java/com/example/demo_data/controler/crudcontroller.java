@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -93,31 +94,37 @@ public class crudcontroller {
          
     }
 
-    @GetMapping("/userurl")
+    @GetMapping("/Admin")
     public String getuserdata() {
         return "data return sucessfully ";
     }
     
     // gererate token 
-    @PostMapping("/token")
-    public String tokengenerate(@RequestBody String email) {
-         String webtoken = jtoken.gernateToken(email);
+    // @PostMapping("/token")
+    // public String tokengenerate(@RequestBody String email) {
+    //      String webtoken = jtoken.gernateToken(email);
         
-        return jtoken.extract(webtoken);
+    //     return jtoken.extract(webtoken);
 
-    }
-   @PostMapping("/tokengenerate")
-   public String tokengenerates(@RequestBody String email) {
+    // }
+//    @PostMapping("/tokengenerate")
+//    public String tokengenerates(@RequestBody String email) {
     
        
-       return jtoken.gernateToken(email);
-   }
-
+//        return jtoken.gernateToken(email);
+//    }
+//    @PreAuthorize("hasRole("ADMIN")");  // shortcut hasrole define; 
    @GetMapping("/admin")
    public String getdata() {
        return "admin dashboard";
    }
    
+   // postmaping using email and add roles ; 
+   @PostMapping("login-user")
+   public String login (@RequestBody logincheckdto dto) {
+       
+       return jtoken.gernateToken(dto.getEmail() , dto.getRole());
+   }
    
     
     
